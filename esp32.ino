@@ -54,7 +54,7 @@ void loop() {
 
   // Enviar datos al servidor web (PHP)
   HTTPClient http;
-  http.begin("http://localhost/Inicio/Tecnoterra/backend/insert.php?temp1=" + String(temperature1) + "&hum1=" + String(humidity1) + "&temp2=" + String(temperature2) + "&hum2=" + String(humidity2));
+  http.begin("http://localhost/base/insert.php" + String(temperature1) + "&hum1=" + String(humidity1) + "&temp2=" + String(temperature2) + "&hum2=" + String(humidity2));
   int httpCode = http.GET();
 
   if (httpCode > 0) {
