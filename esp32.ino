@@ -3,64 +3,60 @@
 #include <HTTPClient.h>
 
 // Configuración WiFi
-const char* ssid = "The kind ";
+const char* ssid = "Familia Mora";
 const char* password = "88136473";
 
-// Definir pines de los sensores DHT
-#define DHTPIN1 14  // Sensor 1 en GPIO 14
-#define DHTPIN2 12  // Sensor 2 en GPIO 12
+// Definir pines del sensor DHT
+#define DHTPIN1 4
 
 // Definir tipo de sensor
 #define DHTTYPE DHT11
 
 DHT dht1(DHTPIN1, DHTTYPE);
-DHT dht2(DHTPIN2, DHTTYPE);
 
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, password);
+  
+  Serial.println("Conectando a WiFi...");
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
-    Serial.println("Conectando a WiFi...");
+    Serial.print(".");
   }
-  Serial.println("Conectado a WiFi");
-
+  
+  Serial.println("\nConectado a WiFi!");
   dht1.begin();
-  dht2.begin();
 }
 
 void loop() {
   float temperature1 = dht1.readTemperature();
   float humidity1 = dht1.readHumidity();
-  float temperature2 = dht2.readTemperature();
-  float humidity2 = dht2.readHumidity();
 
-  if (isnan(temperature1) || isnan(humidity1) || isnan(temperature2) || isnan(humidity2)) {
+  if (isnan(temperature1) || isnan(humidity1)) {
     Serial.println("Error al leer el sensor DHT11");
     return;
   }
 
-  Serial.print("Temperatura 1: ");
+  Serial.print("Temp: ");
   Serial.print(temperature1);
-  Serial.print(" °C, Humedad 1: ");
+  Serial.print("°C, Hum: ");
   Serial.print(humidity1);
-  Serial.println(" %");
+  Serial.println("%");
 
-  Serial.print("Temperatura 2: ");
-  Serial.print(temperature2);
-  Serial.print(" °C, Humedad 2: ");
-  Serial.print(humidity2);
-  Serial.println(" %");
-
-  // Enviar datos al servidor web (PHP)
+  // Construir la URL correctamente
+  String serverUrl = "http://192.168.0.18/insert.php?temp=" + String(temperature1) + "&hum=" + String(humidity1);
+  
   HTTPClient http;
-  http.begin("http://localhost/base/insert.php" + String(temperature1) + "&hum1=" + String(humidity1) + "&temp2=" + String(temperature2) + "&hum2=" + String(humidity2));
-  int httpCode = http.GET();
+  http.begin(serverUrl);
 
+  int httpCode = http.GET();
+  
   if (httpCode > 0) {
-    Serial.println("Datos enviados al servidor");
+    Serial.print("Respuesta del servidor: ");
+    Serial.println(http.getString());
   } else {
-    Serial.println("Error en la solicitud HTTP");
+    Serial.print("Error en solicitud HTTP: ");
+    Serial.println(httpCode);
   }
 
   http.end();
