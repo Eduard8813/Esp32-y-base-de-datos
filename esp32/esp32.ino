@@ -60,5 +60,5 @@ void loop() {
   }
 
   http.end();
-  delay(10000); // Espera 10 segundos antes de enviar nuevamente
+  delay(2000); // Espera 2 segundos antes de enviar nuevamente
 }
