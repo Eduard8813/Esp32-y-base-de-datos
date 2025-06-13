@@ -3,8 +3,8 @@
 #include <HTTPClient.h>
 
 // Configuración WiFi
-const char* ssid = "Familia Mora";
-const char* password = "88136473";
+const char* ssid = "Redmi 14C";
+const char* password = "Chiriza2005";
 
 // Definir pines del sensor DHT
 #define DHTPIN1 4
@@ -33,7 +33,7 @@ void loop() {
   float humidity1 = dht1.readHumidity();
 
   if (isnan(temperature1) || isnan(humidity1)) {
-    Serial.println("Error al leer el sensor DHT11");
+    Serial.println("Error al leer el  sensor DHT11");
     return;
   }
 
@@ -44,7 +44,7 @@ void loop() {
   Serial.println("%");
 
   // Construir la URL correctamente
-  String serverUrl = "http://192.168.0.18/insert.php?temp=" + String(temperature1) + "&hum=" + String(humidity1);
+  String serverUrl = "http://192.168.28.188/Insert.php?temp=" + String(temperature1) + "&hum=" + String(humidity1);
   
   HTTPClient http;
   http.begin(serverUrl);
